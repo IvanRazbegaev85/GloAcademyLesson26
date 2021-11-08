@@ -1,25 +1,26 @@
-let url = 'https://jsonplaceholder.typicode.com/posts'
-
+const url = 'https://jsonplaceholder.typicode.com/posts'
 const file = 'db.json'
 
-const sendData = (url,data) => {
-  return fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers:{
-      'Content-type': 'application/json; charset=UTF-8'
-    }
-  }).then(response => response.json())
-}
+let response;
 
-const getData = (fileData) => {
-  return fetch(fileData)
-      .then(response => response.json())
-  }
+let xhrGet = new XMLHttpRequest()
+let xhrSend = new XMLHttpRequest()
 
-  getData(file).then(data => {
-    sendData(url,data)
-        .then(response => console.log(response))
-        .catch(error => console.log(error))
-  })
-      .catch(error => console.log(error));
+xhrGet.open('GET', file);
+xhrGet.responseType = 'json';
+
+xhrGet.send();
+
+xhrGet.onload = function() {
+  response = xhrGet.response;
+  console.log(response);
+
+  xhrSend.open('POST', url)
+  xhrSend.setRequestHeader('Content-type', 'application/json; charset=UTF-8');
+  xhrSend.send(JSON.stringify(response));
+};
+
+xhrSend.onload = function() {
+  let sendResponse = xhrSend.response;
+  console.log(sendResponse);
+};
